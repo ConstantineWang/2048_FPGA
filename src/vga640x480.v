@@ -46,20 +46,15 @@ parameter vfp = 511; 	// beginning of vertical front porch
 reg [9:0] hc;
 reg [9:0] vc;
 
-
 integer square_size = 80;
 integer boarder_width = 10;
-integer boarder_left = (640 - 5*boarder_width - 4*square_size) / 2;
+integer boarder_left;
 // integer boarder_right = 640 - boarder_left;
-integer boarder_down = 30;
+integer boarder_top = 80;
 
 
 initial begin
-	$readmemh("red.mem", display_r); // read in pixel data from file
-	// $display("display_r[0] = %b", display_r[0]);
-	// $display("display_r[1] = %b", display_r[240*640+320]);
-	$readmemh("green.mem", display_g);
-	$readmemh("blue.mem", display_b);
+	boarder_left = (640 - 5*boarder_width - 4*square_size) / 2;
 end
 // Horizontal & vertical counters --
 // this is how we keep track of where we are on the screen.
@@ -155,35 +150,35 @@ begin
 		end
 
 		// vertical, 30-40, 110-120, 190-200, 270-280, 350-360, 430-440, 510-520
-		else if (vc >= (vbp+boarder_down) && vc < (vbp+boarder_down+boarder_width))
+		else if (vc >= (vbp+boarder_top) && vc < (vbp+boarder_top+boarder_width))
 		begin
 			red = vga_boarder_r;
 			green = vga_boarder_g;
 			blue = vga_boarder_b;
 		end
-		else if (vc >= (vbp+boarder_down+boarder_width+square_size) && 
-				 vc < (vbp+boarder_down+boarder_width+square_size+boarder_width))
+		else if (vc >= (vbp+boarder_top+boarder_width+square_size) && 
+				 vc < (vbp+boarder_top+boarder_width+square_size+boarder_width))
 		begin
 			red = vga_boarder_r;
 			green = vga_boarder_g;
 			blue = vga_boarder_b;
 		end
-		else if (vc >= (vbp+boarder_down+2*boarder_width+2*square_size) && 
-				 vc < (vbp+boarder_down+2*boarder_width+2*square_size+boarder_width))
+		else if (vc >= (vbp+boarder_top+2*boarder_width+2*square_size) && 
+				 vc < (vbp+boarder_top+2*boarder_width+2*square_size+boarder_width))
 		begin
 			red = vga_boarder_r;
 			green = vga_boarder_g;
 			blue = vga_boarder_b;
 		end
-		else if (vc >= (vbp+boarder_down+3*boarder_width+3*square_size) && 
-				 vc < (vbp+boarder_down+3*boarder_width+3*square_size+boarder_width))
+		else if (vc >= (vbp+boarder_top+3*boarder_width+3*square_size) && 
+				 vc < (vbp+boarder_top+3*boarder_width+3*square_size+boarder_width))
 		begin
 			red = vga_boarder_r;
 			green = vga_boarder_g;
 			blue = vga_boarder_b;
 		end
-		else if (vc >= (vbp+boarder_down+4*boarder_width+4*square_size) && 
-				 vc < (vbp+boarder_down+4*boarder_width+4*square_size+boarder_width))
+		else if (vc >= (vbp+boarder_top+4*boarder_width+4*square_size) && 
+				 vc < (vbp+boarder_top+4*boarder_width+4*square_size+boarder_width))
 		begin
 			red = vga_boarder_r;
 			green = vga_boarder_g;
@@ -242,17 +237,26 @@ begin
 		// else
 		else
 		begin
-			red = 0;
-			green = 0;
-			blue = 0;
+			red = vga_blank_r;
+			green = vga_blank_g;
+			blue = vga_blank_b;
 		end
+
+		if (hc < (hbp+boarder_left) || hc >= (hbp+boarder_left+5*boarder_width+4*square_size) ||
+			vc < (vbp+boarder_top) || vc >= (vbp+boarder_top+5*boarder_width+4*square_size))
+		begin
+			red = vga_blank_r;
+			green = vga_blank_g;
+			blue = vga_blank_b;
+		end
+		
 	end
 	// we're outside active vertical range so display black
 	else
 	begin
-		red = 0;
-		green = 0;
-		blue = 0;
+		red = vga_blank_r;
+		green = vga_blank_g;
+		blue = vga_blank_b;
 	end
 end
 
