@@ -40,6 +40,20 @@ wire dclk;
 // disable the 7-segment decimal points
 assign dp = 1;
 
+reg  [0:16*16-1] board_state= 0;
+
+initial begin
+	board_state[0:15] = 0;
+	board_state[16:31] = 1;
+	board_state[32:47] = 2;
+	board_state[48:63] = 3;
+	board_state[64:79] = 4;
+	board_state[80:95] = 5;
+	board_state[96:111] = 6;
+
+end
+
+
 // generate 7-segment clock & display clock
 clockdiv U1(
 	.clk(clk),
@@ -57,9 +71,10 @@ segdisplay U2(
 	);
 
 // VGA controller
-vga640x480 U3(
+vga_board640x480 U3(
 	.dclk(dclk),
 	.clr(clr),
+	.board_state(board_state),
 	.hsync(hsync),
 	.vsync(vsync),
 	.red(red),
