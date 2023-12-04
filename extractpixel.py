@@ -7,8 +7,8 @@ import os
 path = os.getcwd()
 print(path)
 
-TARGET_DIR = path + '/assets/'
-OUTPUT_DIR = path + '/bin_assets/'
+TARGET_DIR = path + '/small_assets/'
+OUTPUT_DIR = path + '/small_bin_assets/'
 
 MASTER_FILE = OUTPUT_DIR + 'master'
 

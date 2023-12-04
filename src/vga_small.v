@@ -18,7 +18,7 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module vga_board640x480(
+module vga_small640x480(
 	input wire dclk,			//pixel clock: 25MHz
 	input wire clr,			//asynchronous reset
 	input [0:16*16-1] board_state,
@@ -48,16 +48,16 @@ reg [9:0] vc;
 reg [11:0] pixel;
 
 
-parameter square_size = 80;
-parameter boarder_width = 10;
+parameter square_size = 20;
+parameter boarder_width = 2;
 integer boarder_left;
 // integer boarder_right = 640 - boarder_left;
-parameter boarder_top = 80;
+parameter boarder_top = 280;
 
 // reg for assets
-reg [3:0] m_red [0:80*80*11-1];
-reg [3:0] m_green [0:80*80*11-1];
-reg [3:0] m_blue [0:80*80*11-1];
+reg [3:0] m_red [0:20*20*11-1];
+reg [3:0] m_green [0:20*20*11-1];
+reg [3:0] m_blue [0:20*20*11-1];
 
 
 

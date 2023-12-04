@@ -18,7 +18,7 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module NERP_demo_top(
+module top_2048(
 	input wire clk,			//master clock = 100MHz
 	input wire clr,			//right-most pushbutton for reset
 	output wire [6:0] seg,	//7-segment display LEDs
