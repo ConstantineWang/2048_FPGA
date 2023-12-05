@@ -47,6 +47,8 @@ reg [9:0] hc;
 reg [9:0] vc;
 reg [11:0] pixel;
 
+integer row, col, r_offset, c_offset, val;
+reg [3:0] idx;
 
 parameter square_size = 20;
 parameter boarder_width = 2;
@@ -60,49 +62,13 @@ reg [3:0] m_green [0:20*20*11-1];
 reg [3:0] m_blue [0:20*20*11-1];
 
 
-
-function [11:0] get_pixel;
-	input [9:0] hc, vc;
-    reg [3:0] idx;
-    integer row, col, r_offset, c_offset, val;
-    begin
-        row = (vc - vbp - boarder_top) / (square_size + boarder_width);
-        col = (hc - hbp - boarder_left) / (square_size + boarder_width);
-        r_offset = (vc - vbp - boarder_top) % (square_size + boarder_width);
-        c_offset = (hc - hbp - boarder_left) % (square_size + boarder_width);
-        idx = row * 4 + col;
-
-        // part of boarder or empty
-        if (r_offset < 10 || c_offset < 10 || board_state[idx*16+:16] == 0)
-        begin
-            get_pixel = 12'b000000000000;
-        end
-        // out of bound
-        else if (row < 0 || row > 3 || col < 0 || col > 3)
-        begin
-            get_pixel = 12'b000000000000;
-        end
-        
-        else
-        begin
-            val = board_state[idx*16+:16];
-			// $display("val = %b", val);
-			$display("m_red[%d] = %b", val*square_size*square_size+r_offset*square_size+c_offset, m_red[val*square_size*square_size+r_offset*square_size+c_offset]);
-            get_pixel = {
-                m_red[val*square_size*square_size+r_offset*square_size+c_offset], 
-                m_green[val*square_size*square_size+r_offset*square_size+c_offset],
-                m_blue[val*square_size*square_size+r_offset*square_size+c_offset]
-            };
-        end
-    end
-endfunction
-
+   
 initial begin
 	boarder_left = (640 - 5*boarder_width - 4*square_size) / 2;
-	$readmemh("master_r.mem", m_red); // read in pixel data from file
-	$display("m_red[0] = %b", m_red[0]);
-	$readmemh("master_g.mem", m_green);
-	$readmemh("master_b.mem", m_blue);
+	$readmemh("small_r.mem", m_red); // read in pixel data from file
+	// $display("m_red[0] = %b", m_red[0]);
+	$readmemh("small_g.mem", m_green);
+	$readmemh("small_b.mem", m_blue);
 end
 // Horizontal & vertical counters --
 // this is how we keep track of where we are on the screen.
@@ -236,13 +202,27 @@ begin
 	
 		else
 		begin
-			red = vga_boarder_r;
-			// $display("pixel = %b", pixel);
-			pixel = get_pixel(hc, vc);
-			red = pixel[11:8];
-			green = pixel[7:4];
-			blue = pixel[3:0];
-			// $display("red = %b, green = %b, blue = %b", red, green, blue);
+			row = (vc - vbp - boarder_top) / (square_size + boarder_width);
+			col = (hc - hbp - boarder_left) / (square_size + boarder_width);
+			r_offset = (vc - vbp - boarder_top) % (square_size + boarder_width);
+			c_offset = (hc - hbp - boarder_left) % (square_size + boarder_width);
+			idx = row * 4 + col;
+			$display("idx = %d", idx);
+
+			val = board_state[idx*16+:16];
+			$display("val = %d", val);
+			if (val == 0) begin
+				red = vga_blank_r;
+				green = vga_blank_g;
+				blue = vga_blank_b;
+			end
+			else begin
+				val = val - 1;
+				red = m_red[val*square_size*square_size+r_offset*square_size+c_offset];
+				green = m_green[val*square_size*square_size+r_offset*square_size+c_offset];
+				blue = m_blue[val*square_size*square_size+r_offset*square_size+c_offset];
+			end
+				
 
 		end
 
