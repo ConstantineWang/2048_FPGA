@@ -4,16 +4,17 @@ module board (
     input wire btn_R,
     input wire btn_U,
     input wire btn_D,
-    input integer board_in[0:15],
-    output integer board_out[0:15]
+    // input integer board_in[0:15],
+    output reg [0:16*16-1] board_out
 );
 
-    reg [3:0] random_num;
+    wire [3:0] random_num;
     reg [3:0] random_tmp;
     integer i;
     integer j;
     integer times;
-    reg integer board[0:15];
+    integer board[0:15];
+    integer random_count;
     
     random_num rdm (
         .clk(clk),
@@ -22,15 +23,13 @@ module board (
 
 
     initial begin
-        for (i = 0; i < 16; i = i + 1) begin
-            board[i] = 0;
-        end
+        $readmemh("zero.mem", board);
         board[random_num] = 2;
     end
 
     always @ (board[0] or board[1] or board[2] or board[3] or board[4] or board[5] or board[6] or board[7] or board[8] or board[9] or board[10] or board[11] or board[12] or board[13] or board[14] or board[15]) begin
         for (i = 0; i < 16; i = i + 1) begin
-            board_out[i] = board[i];
+            board_out[i*16+:16] = board[i];
         end
     end
 
@@ -96,13 +95,16 @@ module board (
 
         times = 0;
         random_tmp = random_num;
-        while (board[random_tmp] != 0) begin
+        random_count = 0;
+        while (board[random_tmp] != 0 && random_count != 16) begin
+            random_count = random_count + 1;
             random_tmp = random_tmp + 1;
             if (random_tmp == 16) begin
                 random_tmp = 0;
             end
         end
-        board[random_tmp] = 2;
+        if (random_count != 16)
+            board[random_tmp] = 2;
     end
 
     always @ (posedge btn_L) begin
@@ -167,13 +169,16 @@ module board (
 
         times = 0;
         random_tmp = random_num;
-        while (board[random_tmp] != 0) begin
+        random_count = 0;
+        while (board[random_tmp] != 0 && random_count != 16) begin
+            random_count = random_count + 1;
             random_tmp = random_tmp + 1;
             if (random_tmp == 16) begin
                 random_tmp = 0;
             end
         end
-        board[random_tmp] = 2;
+        if (random_count != 16)
+            board[random_tmp] = 2;
     end
 
     always @ (posedge btn_U) begin
@@ -238,13 +243,16 @@ module board (
 
         times = 0;
         random_tmp = random_num;
-        while (board[random_tmp] != 0) begin
+        random_count = 0;
+        while (board[random_tmp] != 0 && random_count != 16) begin
+            random_count = random_count + 1;
             random_tmp = random_tmp + 1;
             if (random_tmp == 16) begin
                 random_tmp = 0;
             end
         end
-        board[random_tmp] = 2;
+        if (random_count != 16)
+            board[random_tmp] = 2;
     end
 
     always @ (posedge btn_D) begin
@@ -309,13 +317,16 @@ module board (
 
         times = 0;
         random_tmp = random_num;
-        while (board[random_tmp] != 0) begin
+        random_count = 0;
+        while (board[random_tmp] != 0 && random_count != 16) begin
+            random_count = random_count + 1;
             random_tmp = random_tmp + 1;
             if (random_tmp == 16) begin
                 random_tmp = 0;
             end
         end
-        board[random_tmp] = 2;
+        if (random_count != 16)
+            board[random_tmp] = 2;
     end    
   
 endmodule

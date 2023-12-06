@@ -4,8 +4,9 @@ module tb_board;
     reg btn_R;
     reg btn_U;
     reg btn_D;
-    reg integer board_in [0:15];
-    wire integer board_out [0:15];
+    // reg integer board_in [0:15];
+    wire [0:16*16-1] board_out_flat;
+    integer board_out [0:15];
 
     integer random_num;
     integer i;
@@ -16,9 +17,10 @@ module tb_board;
         .btn_R(btn_R),
         .btn_U(btn_U),
         .btn_D(btn_D),
-        .board_in(board_in),
-        .board_out(board_out)
+        //.board_in(board_in),
+        .board_out(board_out_flat)
     );
+
 
     initial begin
         clk = 0;
@@ -28,6 +30,9 @@ module tb_board;
         btn_D = 0;
         #133;
         btn_R = 1;
+        for (i = 0; i < 16; i = i + 1) begin
+            board_out[i] = board_out_flat[i*16+:16];
+        end
         //display four number in one line, and four lines in total 4*4=16 numbers
         $display(board_out[0], board_out[1], board_out[2], board_out[3]);
         $display(board_out[4], board_out[5], board_out[6], board_out[7]);
@@ -38,6 +43,9 @@ module tb_board;
         btn_R = 0;
         #182;
 
+        for (i = 0; i < 16; i = i + 1) begin
+            board_out[i] = board_out_flat[i*16+:16];
+        end
         btn_L = 1;
         //display four number in one line, and four lines in total 4*4=16 numbers
         $display(board_out[0], board_out[1], board_out[2], board_out[3]);
@@ -49,6 +57,9 @@ module tb_board;
         btn_L = 0;
         #182;
 
+        for (i = 0; i < 16; i = i + 1) begin
+            board_out[i] = board_out_flat[i*16+:16];
+        end
         btn_U = 1;
         //display four number in one line, and four lines in total 4*4=16 numbers
         $display(board_out[0], board_out[1], board_out[2], board_out[3]);
