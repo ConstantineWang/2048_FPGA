@@ -13,7 +13,7 @@ module board (
     integer i;
     integer j;
     integer times;
-    reg [15:0] board[0:15];
+    reg [15:0] board [0:15];
     integer random_count;
     
     random_num rdm (
@@ -23,7 +23,7 @@ module board (
 
 
     initial begin
-        $readmemh("zero.mem", board);
+        $readmemh("zeroboard.mem", board);
         // board[random_num] = 1;
     end
 

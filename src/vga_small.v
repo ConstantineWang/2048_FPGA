@@ -21,7 +21,7 @@
 module vga_small640x480(
 	input wire dclk,			//pixel clock: 25MHz
 	input wire clr,			//asynchronous reset
-	input [0:16*16-1] board_state,
+	input [0:NUM_WIDTH*16-1] board_state,
 	output wire hsync,		//horizontal sync out
 	output wire vsync,		//vertical sync out
 	output reg [3:0] red,	//red vga output
@@ -41,6 +41,7 @@ parameter vbp = 31; 		// end of vertical back porch
 parameter vfp = 511; 	// beginning of vertical front porch
 // active horizontal video is therefore: 784 - 144 = 640
 // active vertical video is therefore: 511 - 31 = 480
+parameter NUM_WIDTH = 4;
 
 // registers for storing the horizontal & vertical counters
 reg [9:0] hc;
@@ -209,7 +210,7 @@ begin
 			idx = row * 4 + col;
 			$display("idx = %d", idx);
 
-			val = board_state[idx*16+:16];
+			val = board_state[idx*NUM_WIDTH+:NUM_WIDTH];
 			$display("val = %d", val);
 			if (val == 0) begin
 				red = vga_blank_r;

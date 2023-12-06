@@ -52,7 +52,7 @@ assign dp = 1;
 // 	$display("board_state = %b", board_state);
 
 // end
-wire [0:16*16-1] board_state;
+wire [0:4*16-1] board_state;
 
 
 // generate 7-segment clock & display clock
@@ -64,12 +64,12 @@ clockdiv U0(
 	);
 
 // 2048 game controller
-board U1(
+logic_2048 U1(
 	.clk(segclk),
-	.btn_L(btnL),
-	.btn_R(btnR),
-	.btn_U(btnU),
-	.btn_D(btnD),
+	.btnL(btnL),
+	.btnR(btnR),
+	.btnU(btnU),
+	.btnD(btnD),
 	.board_out(board_state)
 	);
 
