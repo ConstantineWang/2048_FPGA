@@ -205,13 +205,13 @@ begin
 		begin
 			row = (vc - vbp - boarder_top) / (square_size + boarder_width);
 			col = (hc - hbp - boarder_left) / (square_size + boarder_width);
-			r_offset = (vc - vbp - boarder_top) % (square_size + boarder_width);
-			c_offset = (hc - hbp - boarder_left) % (square_size + boarder_width);
+			r_offset = (vc - vbp - boarder_top - boarder_width) % (square_size + boarder_width);
+			c_offset = (hc - hbp - boarder_left - boarder_width) % (square_size + boarder_width);
 			idx = row * 4 + col;
-			$display("idx = %d", idx);
+			// $display("idx = %d", idx);
 
 			val = board_state[idx*NUM_WIDTH+:NUM_WIDTH];
-			$display("val = %d", val);
+			// $display("val = %d", val);
 			if (val == 0) begin
 				red = vga_blank_r;
 				green = vga_blank_g;
