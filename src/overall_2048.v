@@ -119,6 +119,7 @@ vga_small640x480 U3(
 //     );
 vga640x480 U4(
     .dclk(dclk),
+    .clr(clr),
     .win(won),
     .hsync(hsync_win),
     .vsync(vsync_win),

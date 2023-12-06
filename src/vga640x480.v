@@ -20,6 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 module vga640x480(
 	input wire dclk,			//pixel clock: 25MHz
+	input wire clr,
 	input wire win,			//asynchronous reset
 	output wire hsync,		//horizontal sync out
 	output wire vsync,		//vertical sync out
@@ -43,8 +44,8 @@ parameter vfp = 511; 	// beginning of vertical front porch
 // active vertical video is therefore: 511 - 31 = 480
 
 // registers for storing the horizontal & vertical counters
-reg [9:0] hc = 0;
-reg [9:0] vc = 0;
+reg [9:0] hc;
+reg [9:0] vc;
 
 // Horizontal & vertical counters --
 // this is how we keep track of where we are on the screen.
@@ -53,8 +54,15 @@ reg [9:0] vc = 0;
 // only triggered on signal transitions or "edges".
 // posedge = rising edge  &  negedge = falling edge
 // Assignment statements can only be used on type "reg" and need to be of the "non-blocking" type: <=
-always @(posedge dclk)
-begin
+always @(posedge dclk or posedge clr)
+begin	
+	// reset condition
+	if (clr == 1)
+	begin
+		hc <= 0;
+		vc <= 0;
+	end
+	else
 	begin
 		// keep counting until the end of the line
 		if (hc < hpixels - 1)
