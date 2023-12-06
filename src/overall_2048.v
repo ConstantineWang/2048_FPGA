@@ -42,6 +42,9 @@ wire segclk;
 // VGA display clock interconnect
 wire dclk;
 
+// 7-segment display interconnect
+wire [13:0] turns;
+
 // disable the 7-segment decimal points
 assign dp = 1;
 
@@ -70,13 +73,14 @@ logic_2048 U1(
 	.btnR(btnR),
 	.btnU(btnU),
 	.btnD(btnD),
-	.board_out(board_state)
+	.board_out(board_state),
+    .turns(turns)
 	);
 
 // 7-segment display controller
-segdisplay U2(
-	.segclk(segclk),
-	.clr(clr),
+seg_display U2(
+	.fastHz(segclk),
+	.turns(turns),
 	.seg(seg),
 	.an(an)
 	);

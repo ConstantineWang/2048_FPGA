@@ -5,7 +5,8 @@ module logic_2048 (
     input wire btnU,
     input wire btnD,
     // input integer board_in[0:15],
-    output reg [0:NUM_WIDTH*16-1] board_out
+    output reg [0:NUM_WIDTH*16-1] board_out,
+    output reg [13:0] turns = 0
 );
 
     parameter NUM_WIDTH = 4;
@@ -16,7 +17,6 @@ module logic_2048 (
 
     integer idx;
     integer last_num;
-    integer times;
     reg [0:NUM_WIDTH*16-1] board = 0;
     integer random_count;
 
@@ -62,6 +62,7 @@ module logic_2048 (
     always @ (posedge clk) begin
         // move right
         if (btnR && !last_btnR) begin
+            turns = turns + 1;
             for (i = 0; i < 4; i = i + 1) begin
                 // keep track of last active number
                 idx = 3;
@@ -106,6 +107,7 @@ module logic_2048 (
         last_btnR = btnR;
 
         if (btnL && !last_btnL) begin
+            turns = turns + 1;
             for (i = 0; i < 4; i = i + 1) begin
                 // keep track of last active number
                 idx = 0;
@@ -141,6 +143,7 @@ module logic_2048 (
         end
         last_btnL = btnL;
         if (btnU && !last_btnU) begin
+            turns = turns + 1;
             for (j = 0; j < 4; j = j + 1) begin
                 // keep track of last active number
                 idx = 0;
@@ -176,6 +179,7 @@ module logic_2048 (
         last_btnU = btnU;
 
         if (btnD && !last_btnD) begin
+            turns = turns + 1;
             for (j = 0; j < 4; j = j + 1) begin
                 // keep track of last active number
                 idx = 3;
