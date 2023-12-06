@@ -64,8 +64,8 @@ module logic_2048 (
         if (btnR && !last_btnR) begin
             for (i = 0; i < 4; i = i + 1) begin
                 // keep track of last active number
-                last_num = 0;
                 idx = 3;
+                last_num = board[(i*4+idx)*NUM_WIDTH+:NUM_WIDTH];
 
                 // start from right
                 //      if 0, go left
@@ -73,41 +73,43 @@ module logic_2048 (
                 //          if same, merge
                 //          otherwise, move the new number to the right
 
-                for (j = 3; j >= 0; j = j - 1) begin
-                    // $display("last_num = %d, idx = %d, current = %d", last_num, idx, board[(i*4+j)*16+:16]);
+                for (j = 2; j >= 0; j = j - 1) begin
+                    // $display("last_num = %d, idx = %d, current = %d", last_num, idx, board[(i*4+j)*4+:4]);
+
+                    // 2 1 1 0
+                    // last_num = 0, idx = 3
+                    // last_num = 1, idx = 2
+                    // last_num = 2; idx = 1
+                    // last_num = 2; idx = 1
 
                     if (board[(i*4+j)*NUM_WIDTH+:NUM_WIDTH]) begin
-                        if (!last_num) begin
-                            last_num = board[(i*4+j)*NUM_WIDTH+:NUM_WIDTH];
-                            board[(i*4+idx)*NUM_WIDTH+:NUM_WIDTH] = last_num;
-                            if (idx != j) begin
-                                board[(i*4+j)*NUM_WIDTH+:NUM_WIDTH] = 0;
-                            end
+                        if (last_num == board[(i*4+j)*NUM_WIDTH+:NUM_WIDTH]) begin
+                            board[(i*4+j)*NUM_WIDTH+:NUM_WIDTH] = 0;
+                            board[(i*4+idx)*NUM_WIDTH+:NUM_WIDTH] = last_num + 1;
+                            idx = idx - 1;
+                            last_num = 0;
                         end
                         else begin
-                            if (last_num == board[(i*4+j)*NUM_WIDTH+:NUM_WIDTH]) begin
+                            if (last_num) 
+                                idx = idx - 1;
+                            last_num = board[(i*4+j)*NUM_WIDTH+:NUM_WIDTH];
+                            board[(i*4+idx)*NUM_WIDTH+:NUM_WIDTH] = board[(i*4+j)*NUM_WIDTH+:NUM_WIDTH];
+                            if (idx != j)
                                 board[(i*4+j)*NUM_WIDTH+:NUM_WIDTH] = 0;
-                                board[(i*4+idx)*NUM_WIDTH+:NUM_WIDTH] = last_num + 1;
-                                idx = idx - 1;
-                                last_num = 0;
-                            end
-                            else begin
-                                idx = idx - 1;
-                                board[(i*4+idx)*NUM_WIDTH+:NUM_WIDTH] = last_num;
-                                last_num = board[(i*4+j)*NUM_WIDTH+:NUM_WIDTH];
-                            end
                         end
                     end
+
                 end
             end
             spawn_random();
         end
         last_btnR = btnR;
+
         if (btnL && !last_btnL) begin
             for (i = 0; i < 4; i = i + 1) begin
                 // keep track of last active number
-                last_num = 0;
                 idx = 0;
+                last_num = board[(i*4+idx)*NUM_WIDTH+:NUM_WIDTH];
 
                 // start from left
                 //      if 0, go right
@@ -115,26 +117,22 @@ module logic_2048 (
                 //          if same, merge
                 //          otherwise, move the new number to the left
 
-                for (j = 0; j < 4; j = j + 1) begin
+                for (j = 1; j < 4; j = j + 1) begin
+                    $display("last_num = %d, idx = %d, current = %d", last_num, idx, board[(i*4+j)*NUM_WIDTH+:NUM_WIDTH]);
                     if (board[(i*4+j)*NUM_WIDTH+:NUM_WIDTH]) begin
-                        if (!last_num) begin
-                            last_num = board[(i*4+j)*NUM_WIDTH+:NUM_WIDTH];
-                            board[(i*4+idx)*NUM_WIDTH+:NUM_WIDTH] = last_num;
-                            if (idx != j)
-                                board[(i*4+j)*NUM_WIDTH+:NUM_WIDTH] = 0;
+                        if (last_num == board[(i*4+j)*NUM_WIDTH+:NUM_WIDTH]) begin
+                            board[(i*4+j)*NUM_WIDTH+:NUM_WIDTH] = 0;
+                            board[(i*4+idx)*NUM_WIDTH+:NUM_WIDTH] = last_num + 1;
+                            idx = idx + 1;
+                            last_num = 0;
                         end
                         else begin
-                            if (last_num == board[(i*4+j)*NUM_WIDTH+:NUM_WIDTH]) begin
+                            if (last_num) 
+                                idx = idx + 1;
+                            last_num = board[(i*4+j)*NUM_WIDTH+:NUM_WIDTH];
+                            board[(i*4+idx)*NUM_WIDTH+:NUM_WIDTH] = board[(i*4+j)*NUM_WIDTH+:NUM_WIDTH];
+                            if (idx != j)
                                 board[(i*4+j)*NUM_WIDTH+:NUM_WIDTH] = 0;
-                                board[(i*4+idx)*NUM_WIDTH+:NUM_WIDTH] = last_num + 1;
-                                idx = idx + 1;
-                                last_num = 0;
-                            end
-                            else begin
-                                idx = idx + 1;
-                                board[(i*4+idx)*NUM_WIDTH+:NUM_WIDTH] = last_num;
-                                last_num = board[(i*4+j)*NUM_WIDTH+:NUM_WIDTH];
-                            end
                         end
                     end
                 end
@@ -145,8 +143,8 @@ module logic_2048 (
         if (btnU && !last_btnU) begin
             for (j = 0; j < 4; j = j + 1) begin
                 // keep track of last active number
-                last_num = 0;
                 idx = 0;
+                last_num = board[(idx*4+j)*NUM_WIDTH+:NUM_WIDTH];
 
                 // start from top
                 //      if 0, go down
@@ -154,26 +152,21 @@ module logic_2048 (
                 //          if same, merge
                 //          otherwise, move the new number to the top
 
-                for (i = 0; i < 4; i = i + 1) begin
+                for (i = 1; i < 4; i = i + 1) begin
                     if (board[(i*4+j)*NUM_WIDTH+:NUM_WIDTH]) begin
-                        if (!last_num) begin
-                            last_num = board[(i*4+j)*NUM_WIDTH+:NUM_WIDTH];
-                            board[(idx*4+j)*NUM_WIDTH+:NUM_WIDTH] = last_num;
-                            if (idx != i)
-                                board[(i*4+j)*NUM_WIDTH+:NUM_WIDTH] = 0;
+                        if (last_num == board[(i*4+j)*NUM_WIDTH+:NUM_WIDTH]) begin
+                            board[(i*4+j)*NUM_WIDTH+:NUM_WIDTH] = 0;
+                            board[(idx*4+j)*NUM_WIDTH+:NUM_WIDTH] = last_num + 1;
+                            idx = idx + 1;
+                            last_num = 0;
                         end
                         else begin
-                            if (last_num == board[(i*4+j)*NUM_WIDTH+:NUM_WIDTH]) begin
-                                board[(i*4+j)*NUM_WIDTH+:NUM_WIDTH] <= 0;
-                                board[(idx*4+j)*NUM_WIDTH+:NUM_WIDTH] <= last_num + 1;
+                            if (last_num) 
                                 idx = idx + 1;
-                                last_num = 0;
-                            end
-                            else begin
-                                idx = idx + 1;
-                                board[(idx*4+j)*NUM_WIDTH+:NUM_WIDTH] <= last_num;
-                                last_num = board[(i*4+j)*NUM_WIDTH+:NUM_WIDTH];
-                            end
+                            last_num = board[(i*4+j)*NUM_WIDTH+:NUM_WIDTH];
+                            board[(idx*4+j)*NUM_WIDTH+:NUM_WIDTH] = board[(i*4+j)*NUM_WIDTH+:NUM_WIDTH];
+                            if (idx != i)
+                                board[(i*4+j)*NUM_WIDTH+:NUM_WIDTH] = 0;
                         end
                     end
                 end
@@ -185,8 +178,8 @@ module logic_2048 (
         if (btnD && !last_btnD) begin
             for (j = 0; j < 4; j = j + 1) begin
                 // keep track of last active number
-                last_num = 0;
                 idx = 3;
+                last_num = board[(idx*4+j)*NUM_WIDTH+:NUM_WIDTH];
 
                 // start from bottom
                 //      if 0, go up
@@ -194,26 +187,21 @@ module logic_2048 (
                 //          if same, merge
                 //          otherwise, move the new number to the bottom
 
-                for (i = 3; i >= 0; i = i - 1) begin
+                for (i = 2; i >= 0; i = i - 1) begin
                     if (board[(i*4+j)*NUM_WIDTH+:NUM_WIDTH]) begin
-                        if (!last_num) begin
-                            last_num = board[(i*4+j)*NUM_WIDTH+:NUM_WIDTH];
-                            board[(idx*4+j)*NUM_WIDTH+:NUM_WIDTH] = last_num;
-                            if (idx != i)
-                                board[(i*4+j)*NUM_WIDTH+:NUM_WIDTH] = 0;
+                        if (last_num == board[(i*4+j)*NUM_WIDTH+:NUM_WIDTH]) begin
+                            board[(i*4+j)*NUM_WIDTH+:NUM_WIDTH] = 0;
+                            board[(idx*4+j)*NUM_WIDTH+:NUM_WIDTH] = last_num + 1;
+                            idx = idx - 1;
+                            last_num = 0;
                         end
                         else begin
-                            if (last_num == board[(i*4+j)*NUM_WIDTH+:NUM_WIDTH]) begin
+                            if (last_num) 
+                                idx = idx - 1;
+                            last_num = board[(i*4+j)*NUM_WIDTH+:NUM_WIDTH];
+                            board[(idx*4+j)*NUM_WIDTH+:NUM_WIDTH] = board[(i*4+j)*NUM_WIDTH+:NUM_WIDTH];
+                            if (idx != i)
                                 board[(i*4+j)*NUM_WIDTH+:NUM_WIDTH] = 0;
-                                board[(idx*4+j)*NUM_WIDTH+:NUM_WIDTH] = last_num + 1;
-                                idx = idx - 1;
-                                last_num = 0;
-                            end
-                            else begin
-                                idx = idx - 1;
-                                board[(idx*4+j)*NUM_WIDTH+:NUM_WIDTH] = last_num;
-                                last_num = board[(i*4+j)*NUM_WIDTH+:NUM_WIDTH];
-                            end
                         end
                     end
                 end
