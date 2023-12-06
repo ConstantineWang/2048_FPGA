@@ -13,7 +13,7 @@ module board (
     integer i;
     integer j;
     integer times;
-    integer board[0:15];
+    reg [15:0] board[0:15];
     integer random_count;
     
     random_num rdm (
@@ -24,7 +24,7 @@ module board (
 
     initial begin
         $readmemh("zero.mem", board);
-        board[random_num] = 2;
+        // board[random_num] = 1;
     end
 
     always @ (board[0] or board[1] or board[2] or board[3] or board[4] or board[5] or board[6] or board[7] or board[8] or board[9] or board[10] or board[11] or board[12] or board[13] or board[14] or board[15]) begin
@@ -51,8 +51,8 @@ module board (
         // Merge tiles
         for (i = 0; i < 4; i = i + 1) begin
             for (j = 3; j >= 1; j = j - 1) begin
-                if (board[i * 4 + j] == board[i * 4 + j - 1]) begin
-                    board[i * 4 + j] = board[i * 4 + j] * 2;
+                if (board[i * 4 + j] && board[i * 4 + j] == board[i * 4 + j - 1]) begin
+                    board[i * 4 + j] = board[i * 4 + j] + 1;
                     board[i * 4 + j - 1] = 0;
                 end
             end
@@ -73,8 +73,8 @@ module board (
         
         for (i = 0; i < 4; i = i + 1) begin
             for (j = 3; j >= 1; j = j - 1) begin
-                if (board[i * 4 + j] == board[i * 4 + j - 1]) begin
-                    board[i * 4 + j] = board[i * 4 + j] * 2;
+                if (board[i * 4 + j] && board[i * 4 + j] == board[i * 4 + j - 1]) begin
+                    board[i * 4 + j] = board[i * 4 + j] + 1;
                     board[i * 4 + j - 1] = 0;
                 end
             end
@@ -104,7 +104,7 @@ module board (
             end
         end
         if (random_count != 16)
-            board[random_tmp] = 2;
+            board[random_tmp] = 1;
     end
 
     always @ (posedge btn_L) begin
@@ -125,8 +125,8 @@ module board (
         // Merge tiles
         for (i = 0; i < 4; i = i + 1) begin
             for (j = 0; j < 3; j = j + 1) begin
-                if (board[i * 4 + j] == board[i * 4 + j + 1]) begin
-                    board[i * 4 + j] = board[i * 4 + j] * 2;
+                if (board[i * 4 + j] && board[i * 4 + j] == board[i * 4 + j + 1]) begin
+                    board[i * 4 + j] = board[i * 4 + j] + 1;
                     board[i * 4 + j + 1] = 0;
                 end
             end
@@ -147,8 +147,8 @@ module board (
         
         for (i = 0; i < 4; i = i + 1) begin
             for (j = 0; j < 3; j = j + 1) begin
-                if (board[i * 4 + j] == board[i * 4 + j + 1]) begin
-                    board[i * 4 + j] = board[i * 4 + j] * 2;
+                if (board[i * 4 + j] && board[i * 4 + j] == board[i * 4 + j + 1]) begin
+                    board[i * 4 + j] = board[i * 4 + j] + 1;
                     board[i * 4 + j + 1] = 0;
                 end
             end
@@ -178,7 +178,7 @@ module board (
             end
         end
         if (random_count != 16)
-            board[random_tmp] = 2;
+            board[random_tmp] = 1;
     end
 
     always @ (posedge btn_U) begin
@@ -199,8 +199,8 @@ module board (
         // Merge tiles
         for (j = 0; j < 4; j = j + 1) begin
             for (i = 0; i < 3; i = i + 1) begin
-                if (board[i * 4 + j] == board[(i + 1) * 4 + j]) begin
-                    board[i * 4 + j] = board[i * 4 + j] * 2;
+                if (board[i * 4 + j] && board[i * 4 + j] == board[(i + 1) * 4 + j]) begin
+                    board[i * 4 + j] = board[i * 4 + j] + 1;
                     board[(i + 1) * 4 + j] = 0;
                 end
             end
@@ -221,8 +221,8 @@ module board (
         
         for (j = 0; j < 4; j = j + 1) begin
             for (i = 0; i < 3; i = i + 1) begin
-                if (board[i * 4 + j] == board[(i + 1) * 4 + j]) begin
-                    board[i * 4 + j] = board[i * 4 + j] * 2;
+                if (board[i * 4 + j] && board[i * 4 + j] == board[(i + 1) * 4 + j]) begin
+                    board[i * 4 + j] = board[i * 4 + j] + 1;
                     board[(i + 1) * 4 + j] = 0;
                 end
             end
@@ -252,7 +252,7 @@ module board (
             end
         end
         if (random_count != 16)
-            board[random_tmp] = 2;
+            board[random_tmp] = 1;
     end
 
     always @ (posedge btn_D) begin
@@ -273,8 +273,8 @@ module board (
         // Merge tiles
         for (j = 0; j < 4; j = j + 1) begin
             for (i = 3; i >= 1; i = i - 1) begin
-                if (board[i * 4 + j] == board[(i - 1) * 4 + j]) begin
-                    board[i * 4 + j] = board[i * 4 + j] * 2;
+                if (board[i * 4 + j]  && board[i * 4 + j] == board[(i - 1) * 4 + j]) begin
+                    board[i * 4 + j] = board[i * 4 + j] + 1;
                     board[(i - 1) * 4 + j] = 0;
                 end
             end
@@ -295,8 +295,8 @@ module board (
         
         for (j = 0; j < 4; j = j + 1) begin
             for (i = 3; i >= 1; i = i - 1) begin
-                if (board[i * 4 + j] == board[(i - 1) * 4 + j]) begin
-                    board[i * 4 + j] = board[i * 4 + j] * 2;
+                if (board[i * 4 + j] && board[i * 4 + j] == board[(i - 1) * 4 + j]) begin
+                    board[i * 4 + j] = board[i * 4 + j] + 1;
                     board[(i - 1) * 4 + j] = 0;
                 end
             end
@@ -326,7 +326,7 @@ module board (
             end
         end
         if (random_count != 16)
-            board[random_tmp] = 2;
+            board[random_tmp] = 1;
     end    
   
 endmodule
