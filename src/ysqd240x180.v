@@ -18,7 +18,7 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module ysqd640x480(
+module ysqd240x180(
 	input wire dclk,			//pixel clock: 25MHz
 	input wire clr,			//asynchronous reset
 	output wire hsync,		//horizontal sync out
@@ -33,10 +33,10 @@ parameter hpixels = 800;// horizontal pixels per line
 parameter vlines = 521; // vertical lines per frame
 parameter hpulse = 96; 	// hsync pulse length
 parameter vpulse = 2; 	// vsync pulse length
-parameter hbp = 144; 	// end of horizontal back porch
-parameter hfp = 784; 	// beginning of horizontal front porch
-parameter vbp = 31; 		// end of vertical back porch
-parameter vfp = 511; 	// beginning of vertical front porch
+parameter hbp = 344; 	// end of horizontal back porch
+parameter hfp = 584; 	// beginning of horizontal front porch
+parameter vbp = 181; 		// end of vertical back porch
+parameter vfp = 361; 	// beginning of vertical front porch
 // active horizontal video is therefore: 784 - 144 = 640
 // active vertical video is therefore: 511 - 31 = 480
 
@@ -44,16 +44,16 @@ parameter vfp = 511; 	// beginning of vertical front porch
 reg [9:0] hc;
 reg [9:0] vc;
 
-reg [3:0] display_r [0:480*640-1]; // [0:479]; // 3D array of 8-bit values for each color
-reg [3:0] display_g [0:480*640-1]; // [0:479];
-reg [3:0] display_b [0:480*640-1]; // [0:479];
+reg [3:0] display_r [0:240*180-1]; // [0:479]; // 3D array of 8-bit values for each color
+reg [3:0] display_g [0:240*180-1]; // [0:479];
+reg [3:0] display_b [0:240*180-1]; // [0:479];
 
 initial begin
-	$readmemh("red.mem", display_r); // read in pixel data from file
+	$readmemh("ysqd_r.mem", display_r); // read in pixel data from file
 	// $display("display_r[0] = %b", display_r[0]);
 	// $display("display_r[1] = %b", display_r[240*640+320]);
-	$readmemh("green.mem", display_g);
-	$readmemh("blue.mem", display_b);
+	$readmemh("ysqd_g.mem", display_g);
+	$readmemh("ysqd_b.mem", display_b);
 end
 // Horizontal & vertical counters --
 // this is how we keep track of where we are on the screen.
@@ -175,23 +175,23 @@ begin
 		// else
 		if (hc >= hfp || hc < hbp)
 		begin
-			red = 0;
-			green = 0;
-			blue = 0;
+			red = 4'b1111;
+			green = 4'b1111;
+			blue = 4'b1111;
 		end
 		else 
 		begin
-			red = display_r[hc-hbp + (vc-vbp)*640];
-			green = display_g[hc-hbp + (vc-vbp)*640];
-			blue = display_b[hc-hbp + (vc-vbp)*640];
+			red = display_r[hc-hbp + (vc-vbp)*240];
+			green = display_g[hc-hbp + (vc-vbp)*240];
+			blue = display_b[hc-hbp + (vc-vbp)*240];
 		end
 	end
 	// we're outside active vertical range so display black
 	else
 	begin
-		red = 0;
-		green = 0;
-		blue = 0;
+		red = 4'b1111;
+		green = 4'b1111;
+		blue = 4'b1111;
 	end
 end
 

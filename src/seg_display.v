@@ -55,3 +55,4 @@ module seg_display (/*AUTOARG*/
     endfunction
 
 endmodule // seg_display
+ 

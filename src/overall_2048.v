@@ -50,6 +50,7 @@ wire won, lost;
 
 wire vsync_game, hsync_game;
 wire vsync_win, hsync_win;
+wire vsync_lose, hsync_lose;
 // 7-segment display interconnect
 wire [13:0] turns;
 
@@ -96,7 +97,7 @@ seg_display U2(
 	);
 
 // VGA controller
-vga_small640x480 U3(
+vga_board640x480 U3(
 	.dclk(dclk),
 	.clr(clr),
 	.board_state(board_state),
@@ -108,46 +109,55 @@ vga_small640x480 U3(
 	);
 
 // winning screen
-// ysqd640x480 U4(
-//     .dclk(dclk),
-//     .clr(clr),
-//     .hsync(hsync_win),
-//     .vsync(vsync_win),
-//     .red(red_win),
-//     .green(green_win),
-//     .blue(blue_win)
-//     );
-vga640x480 U4(
+ysqd240x180 U4(
     .dclk(dclk),
     .clr(clr),
-    .win(won),
     .hsync(hsync_win),
     .vsync(vsync_win),
     .red(red_win),
     .green(green_win),
     .blue(blue_win)
     );
+// vga640x480 U4(
+//     .dclk(dclk),
+//     .clr(clr),
+//     .win(won),
+//     .hsync(hsync_win),
+//     .vsync(vsync_win),
+//     .red(red_win),
+//     .green(green_win),
+//     .blue(blue_win)
+//     );
 // assign red_win = 4'b0000;
 // assign green_win = 4'b1111;
 // assign blue_win = 4'b0000;
 
 // losing screen
 // TODO
+youdied240x180 U5(
+    .dclk(dclk),
+    .clr(clr),
+    .hsync(hsync_lose),
+    .vsync(vsync_lose),
+    .red(red_lose),
+    .green(green_lose),
+    .blue(blue_lose)
+    );
 // assign red_lose = 4'b1111;
 // assign green_lose = 4'b0000;
 // assign blue_lose = 4'b0000;
 
 // mux for VGA output
-// assign red = (won) ? red_win : (lost) ? red_lose : red_game;
-// assign green = (won) ? green_win : (lost) ? green_lose : green_game;
-// assign blue = (won) ? blue_win : (lost) ? blue_lose : blue_game;
+assign red = (won) ? red_win : (lost) ? red_lose : red_game;
+assign green = (won) ? green_win : (lost) ? green_lose : green_game;
+assign blue = (won) ? blue_win : (lost) ? blue_lose : blue_game;
 
-// assign hsync = (won) ? hsync_win : (lost) ? hsync_win : hsync_game;
-// assign vsync = (won) ? vsync_win : (lost) ? vsync_win : vsync_game;
-assign hsync = (won || lost) ? hsync_win : hsync_game;
-assign vsync = (won || lost) ? vsync_win : vsync_game;
+assign hsync = (won) ? hsync_win : (lost) ? hsync_lose : hsync_game;
+assign vsync = (won) ? vsync_win : (lost) ? vsync_lose : vsync_game;
+// assign hsync = (won || lost) ? hsync_win : hsync_game;
+// assign vsync = (won || lost) ? vsync_win : vsync_game;
 
-assign red = (won || lost) ? red_win : red_game;
-assign green = (won || lost) ? green_win : green_game;
-assign blue = (won || lost) ? blue_win : blue_game;
+// assign red = (won || lost) ? red_win : red_game;
+// assign green = (won || lost) ? green_win : green_game;
+// assign blue = (won || lost) ? blue_win : blue_game;
 endmodule

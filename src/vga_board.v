@@ -21,7 +21,7 @@
 module vga_board640x480(
 	input wire dclk,			//pixel clock: 25MHz
 	input wire clr,			//asynchronous reset
-	input [0:16*16-1] board_state,
+	input [0:4*16-1] board_state,
 	output wire hsync,		//horizontal sync out
 	output wire vsync,		//vertical sync out
 	output reg [3:0] red,	//red vga output
@@ -68,12 +68,12 @@ function [11:0] get_pixel;
     begin
         row = (vc - vbp - boarder_top) / (square_size + boarder_width);
         col = (hc - hbp - boarder_left) / (square_size + boarder_width);
-        r_offset = (vc - vbp - boarder_top) % (square_size + boarder_width);
-        c_offset = (hc - hbp - boarder_left) % (square_size + boarder_width);
+        r_offset = (vc - vbp - boarder_top - boarder_width) % (square_size + boarder_width);
+        c_offset = (hc - hbp - boarder_left - boarder_width) % (square_size + boarder_width);
         idx = row * 4 + col;
 
         // part of boarder or empty
-        if (r_offset < 10 || c_offset < 10 || board_state[idx*16+:16] == 0)
+        if (r_offset < 10 || c_offset < 10 || board_state[idx*4+:4] == 0)
         begin
             get_pixel = 12'b000000000000;
         end
@@ -85,9 +85,9 @@ function [11:0] get_pixel;
         
         else
         begin
-            val = board_state[idx*16+:16];
+            val = board_state[idx*4+:4] - 1;
 			// $display("val = %b", val);
-			$display("m_red[%d] = %b", val*square_size*square_size+r_offset*square_size+c_offset, m_red[val*square_size*square_size+r_offset*square_size+c_offset]);
+			// $display("m_red[%d] = %b", val*square_size*square_size+r_offset*square_size+c_offset, m_red[val*square_size*square_size+r_offset*square_size+c_offset]);
             get_pixel = {
                 m_red[val*square_size*square_size+r_offset*square_size+c_offset], 
                 m_green[val*square_size*square_size+r_offset*square_size+c_offset],
@@ -100,7 +100,7 @@ endfunction
 initial begin
 	boarder_left = (640 - 5*boarder_width - 4*square_size) / 2;
 	$readmemh("master_r.mem", m_red); // read in pixel data from file
-	$display("m_red[0] = %b", m_red[0]);
+	// $display("m_red[0] = %b", m_red[0]);
 	$readmemh("master_g.mem", m_green);
 	$readmemh("master_b.mem", m_blue);
 end

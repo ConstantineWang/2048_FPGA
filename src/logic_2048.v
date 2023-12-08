@@ -149,9 +149,9 @@ module logic_2048 (
 
                     end
                 end
+                spawn_random();
                 check_win();
                 check_lose();
-                spawn_random();
             end
             last_btnR = btnR;
 
@@ -188,9 +188,9 @@ module logic_2048 (
                         end
                     end
                 end
+                spawn_random();
                 check_win();
                 check_lose();
-                spawn_random();
             end
             last_btnL = btnL;
             if (btnU && !last_btnU) begin
@@ -225,9 +225,9 @@ module logic_2048 (
                         end
                     end
                 end
+                spawn_random();
                 check_win();
                 check_lose();
-                spawn_random();
             end
             last_btnU = btnU;
 
@@ -263,9 +263,9 @@ module logic_2048 (
                         end
                     end
                 end
+                spawn_random();
                 check_win();
                 check_lose();
-                spawn_random();
             end
             last_btnD = btnD;
 

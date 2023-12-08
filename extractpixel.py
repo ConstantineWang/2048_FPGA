@@ -7,17 +7,17 @@ import os
 path = os.getcwd()
 print(path)
 
-TARGET_DIR = path + '/small_assets/'
-OUTPUT_DIR = path + '/small_bin_assets/'
+TARGET_DIR = path + '/youdied_asset/'
+OUTPUT_DIR = path + '/youdied_bin/'
 
-MASTER_FILE = OUTPUT_DIR + 'master'
+MASTER_FILE = OUTPUT_DIR + 'youdied'
 
 # load all images
 from os import listdir
 from os.path import isfile, join
 
 onlyfiles = [f for f in listdir(TARGET_DIR) if isfile(join(TARGET_DIR, f))]
-onlyfiles.sort(key=lambda f: int(''.join(filter(str.isdigit, f))))
+# onlyfiles.sort(key=lambda f: int(''.join(filter(str.isdigit, f))))
 print(onlyfiles)
 
 # open master file
